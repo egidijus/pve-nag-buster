@@ -23,11 +23,16 @@ NAGTOKEN="data.status.toLowerCase() !== 'active'"
 NAGFILE="/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js"
 SCRIPT="$(basename "$0")"
 
+
 # disable license nag: https://johnscs.com/remove-proxmox51-subscription-notice/
+
+# 2023-12
+# sed -Ezi.bak "s/(Ext.Msg.show\(\{\s+title: gettext\('No valid sub)/void\(\{ \/\/\1/g" /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js 
+
 
 if grep -qs "$NAGTOKEN" "$NAGFILE" > /dev/null 2>&1; then
   echo "$SCRIPT: Removing Nag ..."
-  sed -i.orig "s/$NAGTOKEN/false/g" "$NAGFILE"
+  sed -Ezi.bak "s/(Ext.Msg.show\(\{\s+title: gettext\('No valid sub)/void\(\{ \/\/\1/g" "$NAGFILE"
   systemctl restart pveproxy.service
 fi
 
